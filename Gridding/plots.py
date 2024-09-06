@@ -10,6 +10,8 @@ from glob import glob
 import math
 import os
 
+from set_demo_defaults import *
+
 def plot_domain(run_directory, variable, timestep=0):
     """Function to plot output from a ParFlow run"""
 
@@ -133,7 +135,6 @@ def plot_domain_mannings(run_directory):
     # for the grid mesh from the ParFlow run grid
     fig, ax = plt.subplots()
     im = ax.pcolormesh(x, y, data, vmin=vmin, vmax=vmax, cmap='plasma_r')
-    plt.colorbar(im, ax=ax, label=label)
     
     # Include mesh lines
     ax.hlines(z,x[0],x[-1],colors='white',linewidth=0.5)
@@ -141,8 +142,130 @@ def plot_domain_mannings(run_directory):
     
     ax.set_xlabel('x [m]')
     ax.set_ylabel('y [m]')
-    ax.set_title(f"{title}")
     plt.show()
+
+
+def plot_vert_var(run_directory, variable, timestep=0):
+    """Function to plot output from a ParFlow run"""
+
+    # Load the run from the file, this is the same as the run defined above
+    run = Run.from_definition(os.path.join(run_directory, "domain_example.pfidb"))   
+
+    data = run.data_accessor # get the data accessor, this makes it easier to access the data from the run
+    nt = len(data.times)  # get the number of time steps
+    nx = data.shape[2]    # get the number of cells in the x direction
+    ny = data.shape[1]    # get the number of cells in the y direction
+    nz = data.shape[0]    # get the number of cells in the z direction
+    dx = data.dx          # get the cell size in the x direction
+    dy = data.dy          # get the cell size in the y direction
+    dz = data.dz          # get the cell size in the z direction, this is a 1D array of size nz
+
+    # Print a summary of the run data
+    print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz}")
+
+    # Load the data
+    if variable == "porosity":
+        data = read_pfb(get_absolute_path(f"domain_example.out.{variable}.pfb")).reshape(nz, nx)
+    elif variable == "mannings":
+        data = read_pfb(get_absolute_path(f"domain_example.out.mannings.pfb"))[0, :, :]
+    else:
+        data = read_pfb(get_absolute_path(f"domain_example.out.{variable}.{str(timestep).zfill(5)}.pfb")).reshape(nz, nx)
+    
+    # Set negative saturation values to NaN
+    if variable == "satur":
+        data[data < 0.0] = np.nan
+    
+    # Set up x and z to match the shape of the ParFlow grid
+    x = np.arange(0.0,(nx+1)*dx,dx)
+    y = np.arange(0.0,(ny+1)*dy,dy)
+    z = np.zeros(nz+1)
+    z[1:] = np.cumsum(dz)
+
+    print(f"x = {x}, y = {y}, z = {z}")
+    print(f"Shapes of : x = {x.shape}, y = {y.shape}, z = {z.shape}")
+
+    # Get limits for plotting
+    vmin = np.nanmin(data)
+    vmax = np.nanmax(data)
+    print(f"vmin: {vmin}, vmax: {vmax}")
+    
+    # Define labels for plots
+    if variable == "satur":
+        label = "Saturation [-]"
+        title = "Saturation"
+    elif variable == "press":
+        label = "Pressure Head [m]"
+        title = "Pressure Head"
+    elif variable == "porosity":
+        label = "Porosity"
+        title = "Porosity"
+    elif variable == "mannings":
+        label = "Mannings"
+        title = "Mannings"
+
+    # Use pcolormesh to plot the data with the x and z coordinates with lines 
+    # for the grid mesh from the ParFlow run grid
+
+    #im = ax.pcolormesh(x, y, data, vmin=vmin, vmax=vmax, cmap='plasma_r')
+    fig = plt.figure(figsize=(8,8) , dpi=100)
+    im = plt.plot(data,z[1:]-dz/2)#Plotting at cell centers
+    plt.xlabel(f"{title}")
+    plt.ylabel('z [m]')
+    if variable in ["porosity", "mannings"]:
+        plt.title(f"{title}")
+    else:
+        plt.title(f"{title} at t={timestep}")
+    plt.show()
+    print("hi")
+
+
+def plot_domain_mannings(run_directory):
+    """Function to plot output from a ParFlow run: Mannings"""
+
+    # Load the run from the file, this is the same as the run defined above
+    run = Run.from_definition(os.path.join(run_directory, "domain_example.pfidb"))   
+
+    data = run.data_accessor # get the data accessor, this makes it easier to access the data from the run
+    nt = len(data.times)  # get the number of time steps
+    nx = data.shape[2]    # get the number of cells in the x direction
+    ny = data.shape[1]    # get the number of cells in the y direction
+    nz = data.shape[0]    # get the number of cells in the z direction
+    dx = data.dx          # get the cell size in the x direction
+    dy = data.dy          # get the cell size in the y direction
+    dz = data.dz          # get the cell size in the z direction, this is a 1D array of size nz
+
+    # Print a summary of the run data
+    print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz}")
+
+    # Load the data
+    data = read_pfb(get_absolute_path(f"domain_example.out.mannings.pfb"))[0, :, :]
+    
+    # Set up x and z to match the shape of the ParFlow grid
+    x = np.arange(0.0,(nx+1)*dx,dx)
+    y = np.arange(0.0,(ny+1)*dy,dy)
+    z = np.zeros(nz+1)
+    z[1:] = np.cumsum(dz)
+
+    # Get limits for plotting
+    vmin = np.nanmin(data)
+    vmax = np.nanmax(data)
+    print(f"vmin: {vmin}, vmax: {vmax}")
+
+    # Use pcolormesh to plot the data with the x and z coordinates with lines 
+    # for the grid mesh from the ParFlow run grid
+    fig, ax = plt.subplots()
+    im = ax.pcolormesh(x, y, data, vmin=vmin, vmax=vmax, cmap='plasma_r')
+    
+    # Include mesh lines
+    ax.hlines(z,x[0],x[-1],colors='white',linewidth=0.5)
+    ax.vlines(x,z[0],z[-1],colors='white',linewidth=0.5)
+    
+    ax.set_xlabel('x [m]')
+    ax.set_ylabel('y [m]')
+    plt.show()
+
 
 
 def plot_domain_overland(run_directory, variable, timestep=0):
