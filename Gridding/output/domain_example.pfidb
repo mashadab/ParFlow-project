@@ -50,7 +50,7 @@ ComputationalGrid.DX
 20
 ComputationalGrid.DY
 3
-2.0
+1.0
 20
 ComputationalGrid.DZ
 3
@@ -69,8 +69,8 @@ ComputationalGrid.Lower.Z
 0.0
 20
 ComputationalGrid.NX
-2
-20
+1
+1
 20
 ComputationalGrid.NY
 1

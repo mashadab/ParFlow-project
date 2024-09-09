@@ -7,16 +7,16 @@
 	},
 	"domains":	{
 		"surface":	{
-			"cell-extent":	[20, 1],
-			"spacing":	[100, 2, 1],
+			"cell-extent":	[1, 1],
+			"spacing":	[100, 1, 1],
 			"origin":	[0, 0, 10],
-			"subgrid-divisions":	[[0, 20], [0, 1]]
+			"subgrid-divisions":	[[0, 1], [0, 1]]
 		},
 		"subsurface":	{
-			"cell-extent":	[20, 1, 10],
-			"spacing":	[100, 2, 1],
+			"cell-extent":	[1, 1, 10],
+			"spacing":	[100, 1, 1],
 			"origin":	[0, 0, 0],
-			"subgrid-divisions":	[[0, 20], [0, 1], [0, 10]]
+			"subgrid-divisions":	[[0, 1], [0, 1], [0, 10]]
 		}
 	},
 	"inputs":	{
@@ -35,12 +35,12 @@
 				"Cell.8.dzScale.Value":	"0.3",
 				"Cell.9.dzScale.Value":	"0.1",
 				"ComputationalGrid.DX":	"100.0",
-				"ComputationalGrid.DY":	"2.0",
+				"ComputationalGrid.DY":	"1.0",
 				"ComputationalGrid.DZ":	"1.0",
 				"ComputationalGrid.Lower.X":	"0.0",
 				"ComputationalGrid.Lower.Y":	"0.0",
 				"ComputationalGrid.Lower.Z":	"0.0",
-				"ComputationalGrid.NX":	"20",
+				"ComputationalGrid.NX":	"1",
 				"ComputationalGrid.NY":	"1",
 				"ComputationalGrid.NZ":	"10",
 				"Contaminants.Names":	"",
