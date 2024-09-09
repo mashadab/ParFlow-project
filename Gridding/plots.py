@@ -29,7 +29,7 @@ def plot_domain(run_directory, variable, timestep=0):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
 
     # Load the data
     if variable == "porosity":
@@ -115,7 +115,7 @@ def plot_domain_mannings(run_directory):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
 
     # Load the data
     data = read_pfb(get_absolute_path(f"domain_example.out.mannings.pfb"))[0, :, :]
@@ -162,7 +162,7 @@ def plot_vert_var(run_directory, variable, timestep=0):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
 
     # Load the data
     if variable == "porosity":
@@ -237,7 +237,7 @@ def plot_domain_mannings(run_directory):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
 
     # Load the data
     data = read_pfb(get_absolute_path(f"domain_example.out.mannings.pfb"))[0, :, :]
@@ -285,7 +285,7 @@ def plot_domain_overland(run_directory, variable, timestep=0):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
 
     # Load the data
     data = read_pfb(get_absolute_path(f"overland_tiltedV.out.{variable}.{str(timestep).zfill(5)}.pfb"))[0, :, :]
