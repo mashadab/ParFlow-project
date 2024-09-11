@@ -29,7 +29,7 @@ def plot_domain(run_directory, variable, timestep=0):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0]}")
 
     # Load the data
     if variable == "porosity":
@@ -115,7 +115,7 @@ def plot_domain_mannings(run_directory):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0]}")
 
     # Load the data
     data = read_pfb(get_absolute_path(f"domain_example.out.mannings.pfb"))[0, :, :]
@@ -162,7 +162,7 @@ def plot_vert_var(run_directory, variable, timestep=0):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0]}")
 
     # Load the data
     if variable == "porosity":
@@ -220,6 +220,76 @@ def plot_vert_var(run_directory, variable, timestep=0):
     print("hi")
 
 
+def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturation_N):
+    """Function to plot output from a ParFlow run"""
+
+    # Load the run from the file, this is the same as the run defined above
+    run = Run.from_definition(os.path.join(run_directory, "domain_example.pfidb"))   
+
+    data = run.data_accessor # get the data accessor, this makes it easier to access the data from the run
+    nt = len(data.times)  # get the number of time steps
+    nx = data.shape[2]    # get the number of cells in the x direction
+    ny = data.shape[1]    # get the number of cells in the y direction
+    nz = data.shape[0]    # get the number of cells in the z direction
+    dx = data.dx          # get the cell size in the x direction
+    dy = data.dy          # get the cell size in the y direction
+    dz = data.dz          # get the cell size in the z direction, this is a 1D array of size nz
+
+    # Print a summary of the run data
+    print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0]}")
+
+
+    
+    # Set up x and z to match the shape of the ParFlow grid
+    x = np.arange(0.0,(nx+1)*dx,dx)
+    y = np.arange(0.0,(ny+1)*dy,dy)
+    z = np.zeros(nz+1)
+    z[1:] = np.cumsum(dz)
+
+    print(f"x = {x}, y = {y}, z = {z}")
+    print(f"Shapes of : x = {x.shape}, y = {y.shape}, z = {z.shape}")
+
+    
+    # Define labels for plots
+    if variable == "satur":
+        label = "Saturation [-]"
+        title = "Saturation"
+    elif variable == "press":
+        label = "Pressure Head [m]"
+        title = "Pressure Head"
+    elif variable == "porosity":
+        label = "Porosity"
+        title = "Porosity"
+    elif variable == "mannings":
+        label = "Mannings"
+        title = "Mannings"
+
+    fig = plt.figure(figsize=(5,7.5) , dpi=100)
+
+    for timestep in time_array:
+        # Load the data
+        if variable == "porosity":
+            data = read_pfb(get_absolute_path(f"domain_example.out.{variable}.pfb")).reshape(nz, nx)
+        elif variable == "mannings":
+            data = read_pfb(get_absolute_path(f"domain_example.out.mannings.pfb"))[0, :, :]
+        else:
+            data = read_pfb(get_absolute_path(f"domain_example.out.{variable}.{str(timestep).zfill(5)}.pfb")).reshape(nz, nx)
+        
+        # Set negative saturation values to NaN
+        if variable == "satur":
+            data[data < 0.0] = np.nan
+
+        plt.plot(data,z[1:]-dz/2,'k-',label=f"t={timestep}",alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+    plt.xlabel(f"{title}")
+    plt.ylabel('z [m]')
+    plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+    plt.legend(loc='best', frameon=False)
+    plt.savefig(f's_w_vs_depth_NRelPerm{RelPerm_N}_NSaturation{Saturation_N}.pdf',bbox_inches='tight', dpi = 600)
+    plt.show()
+
+
+
 def plot_domain_mannings(run_directory):
     """Function to plot output from a ParFlow run: Mannings"""
 
@@ -237,7 +307,7 @@ def plot_domain_mannings(run_directory):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0]}")
 
     # Load the data
     data = read_pfb(get_absolute_path(f"domain_example.out.mannings.pfb"))[0, :, :]
@@ -285,7 +355,7 @@ def plot_domain_overland(run_directory, variable, timestep=0):
 
     # Print a summary of the run data
     print(f"nx = {nx}, ny = {ny}, nz = {nz}, nt = {nt}")
-    print(f"dx = {dx}, dy = {dy}, dz = {dz[0,0]}")
+    print(f"dx = {dx}, dy = {dy}, dz = {dz[0]}")
 
     # Load the data
     data = read_pfb(get_absolute_path(f"overland_tiltedV.out.{variable}.{str(timestep).zfill(5)}.pfb"))[0, :, :]
