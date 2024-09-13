@@ -220,7 +220,7 @@ def plot_vert_var(run_directory, variable, timestep=0):
     print("hi")
 
 
-def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturation_N):
+def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturation_N,simulation_name):
     """Function to plot output from a ParFlow run"""
 
     # Load the run from the file, this is the same as the run defined above
@@ -285,7 +285,7 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
     plt.ylabel('z [m]')
     plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
     plt.legend(loc='best', frameon=False)
-    plt.savefig(f's_w_vs_depth_NRelPerm{RelPerm_N}_NSaturation{Saturation_N}.pdf',bbox_inches='tight', dpi = 600)
+    plt.savefig(f'{simulation_name}_NRelPerm{RelPerm_N}_NSaturation{Saturation_N}_s_w_vs_depth.pdf',bbox_inches='tight', dpi = 600)
     plt.show()
 
 
