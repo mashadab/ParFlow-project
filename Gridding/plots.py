@@ -9,6 +9,7 @@ import parflow.tools.hydrology as hydro
 from glob import glob
 import math
 import os
+from scipy.optimize import fsolve
 
 from set_demo_defaults import *
 
@@ -316,10 +317,15 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
 
         if simulation_name == "wetting":
             Applied_flux = -0.001 #Applied flux = -0.001 m/h (downward direction)
+
+            kr_vG_invert= lambda sw: Ks*kr_sat_vG(sw)+Applied_flux
+            init_sat = fsolve(kr_vG_invert,0.99)  #calculate saturation using inversion
+            print('Initial saturation', init_sat)
+
             print('Shock location',z[-1]+Applied_flux/(phi*(data[-1,0]-data[0,-1]))*timestep,'m') 
-            plt.hlines(z[-1]+(Applied_flux)/(phi*(data[-1,0] - data[0,-1]))*timestep,data[0,-1],data[-1,0],color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
-            plt.vlines(data[-1,0],z[-1],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
-            plt.vlines(data[0,-1],z[0],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.hlines(z[-1]+(Applied_flux)/(phi*(data[-1,0] - data[0,-1]))*timestep,s_r,init_sat,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.vlines(init_sat,z[-1],z[-1]+Applied_flux/(phi*(data[-1,0]-s_r))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.vlines(s_r,z[0],z[-1]+Applied_flux/(phi*(data[-1,0]-s_r))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
 
         elif simulation_name == "unsaturated_column":
             s_s= 1.0 #Complete saturation
