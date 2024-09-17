@@ -287,7 +287,14 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
 
     #lambda_vG = lambda sw: Ks*2*(se_vG(sw) - se_vG(sw)*(1 - se_vG(sw)**(1/m))**m) * (1-(1 - se_vG(sw)**(1/m))**m +(1 - se_vG(sw)**(1/m))**(m-1) * se_vG(sw)**(1/m)) *1/(phi*(s_s - s_r))
 
-    lambda_vG_numeric = lambda sw: Ks * ( kr_sat_vG(sw +1e-8) - kr_sat_vG(sw))/(phi*1e-8)
+    #lambda_vG_numeric = lambda sw: Ks * ( kr_sat_vG(sw +1e-8) - kr_sat_vG(sw))/(phi*1e-8)
+
+    dkrbydsw_vG_numeric = lambda sw: ( kr_sat_vG(sw +1e-8) - kr_sat_vG(sw))/(1e-8)  #numerical
+    dkrbydsw_vG_analytic= lambda sw: 1/(s_s - s_r) * (0.5*(se_vG(sw))**0.5*((se_vG(sw))**(1/m) - 1)*((1 - (se_vG(sw))**(1/m))**m - 1) + 2*(se_vG(sw))**((0.5*m + 1)/m)*(1 - (se_vG(sw))**(1/m))**m)*((1 - (se_vG(sw))**(1/m))**m - 1)/((se_vG(sw))**1.0*((se_vG(sw))**(1/m) - 1))
+
+    lambda_vG_numeric  = lambda sw: Ks/phi*dkrbydsw_vG_numeric(sw)
+
+    lambda_vG_analytic = lambda sw: Ks/phi*dkrbydsw_vG_analytic(sw)
 
     fig = plt.figure(figsize=(5,7.5) , dpi=100)
 
@@ -319,17 +326,20 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
             Initial_head = 1 #m
  
             init_sat = sw_vG(Initial_head,Saturation_N)
+            print(init_sat)
             sat_array = np.linspace(s_r,init_sat,10000)  #Saturation array
             print(timestep)
             lambda_vG_calc = lambda_vG(sat_array)  #Speed of rarefaction lambda_vG_numeric or lambda_vG
             lambda_vG_num_calc = lambda_vG_numeric(sat_array)  #Speed of rarefaction lambda_vG_numeric or lambda_vG
 
-            print(np.linalg.norm(lambda_vG_numeric(sat_array)-lambda_vG(sat_array)))
+            print(np.linalg.norm(dkrbydsw_vG_numeric(sat_array)-dkrbydsw_vG_analytic(sat_array)))
+            print(np.linalg.norm(lambda_vG_numeric(sat_array)-lambda_vG_analytic(sat_array)))
             #print(np.linalg.norm(lambda_vG_v2(sat_array)-lambda_vG(sat_array)))
 
 
             #plt.plot(sat_array, z[-1]-lambda_vG_calc*timestep,0,1,color=green,linestyle='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
-            plt.plot(sat_array, z[-1]-lambda_vG_num_calc*timestep,0,1,color=red,linestyle='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            #plt.plot(sat_array, z[-1]-lambda_vG_num_calc*timestep,0,1,color=red,linestyle='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.plot(sat_array, z[-1]-lambda_vG_analytic(sat_array)*timestep,0,1,color=red,linestyle='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
    
             #print('Rising perch water table location',z[0]+(phi*(data[-1,0]-s_s))*timestep,'m') 
             plt.hlines(z[0]+(-kr_vG(Initial_head,RelPerm_N)*Ks)/(phi*(sw_vG(Initial_head,RelPerm_N)-s_s))*timestep, init_sat,s_s,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
