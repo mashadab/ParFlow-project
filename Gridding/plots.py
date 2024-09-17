@@ -217,7 +217,7 @@ def plot_vert_var(run_directory, variable, timestep=0):
     else:
         plt.title(f"{title} at t={timestep}")
     plt.show()
-    print("hi")
+
 
 
 def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturation_N,simulation_name):
@@ -265,6 +265,30 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
         label = "Mannings"
         title = "Mannings"
 
+    #Soil properties from input file
+    Ks = 0.01465 #Saturated hydraulic conductivity = 0.01465 m/h
+    phi = 0.25 #porosity (see Pfidb)
+    alpha_vG = 1.0
+    s_s = 1.0; s_r = 0.2 #Saturation saturated and residual
+    m = 1-1/RelPerm_N
+
+    kr_vG= lambda h,n: (1-(np.abs(alpha_vG*h)**(n-1))/(1+np.abs(alpha_vG*h)**n)**(1-1/n))**2.0/((1 + np.abs(alpha_vG*h)**n)**((1-1/n)/2)) #kr, head in cms
+    sw_vG= lambda h,n: (s_s - s_r)/((1 + np.abs(alpha_vG*h)**n)**(1-1/n))+s_r
+
+
+    se_vG= lambda sw: ((sw - s_r)/(s_s - s_r))
+    kr_sat_vG= lambda sw: se_vG(sw)**(1/2)*(1-(1-se_vG(sw)**(1/m))**m)**2
+    
+    lambda_vG= lambda sw: Ks/(phi*(s_s - s_r)) * (2*se_vG(sw)*((se_vG(sw))**(1/m)*(1 - (se_vG(sw))**(1/m))**m + ((se_vG(sw))**(1/m) - 1)*((1 - (se_vG(sw))**(1/m))**m - 1))*((1 - (se_vG(sw))**(1/m))**m - 1)/((se_vG(sw))**(1/m) - 1))
+    
+    #lambda_vG= lambda sw: Ks/(phi*(s_s - s_r)) *
+
+
+
+    #lambda_vG = lambda sw: Ks*2*(se_vG(sw) - se_vG(sw)*(1 - se_vG(sw)**(1/m))**m) * (1-(1 - se_vG(sw)**(1/m))**m +(1 - se_vG(sw)**(1/m))**(m-1) * se_vG(sw)**(1/m)) *1/(phi*(s_s - s_r))
+
+    lambda_vG_numeric = lambda sw: Ks * ( kr_sat_vG(sw +1e-8) - kr_sat_vG(sw))/(phi*1e-8)
+
     fig = plt.figure(figsize=(5,7.5) , dpi=100)
 
     for timestep in time_array:
@@ -281,6 +305,40 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
             data[data < 0.0] = np.nan
 
         plt.plot(data,z[1:]-dz/2,'k-',label=f"t={timestep}",alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+
+
+        if simulation_name == "wetting":
+            Applied_flux = -0.001 #Applied flux = -0.001 m/h (downward direction)
+            print('Shock location',z[-1]+Applied_flux/(phi*(data[-1,0]-data[0,-1]))*timestep,'m') 
+            plt.hlines(z[-1]+(Applied_flux)/(phi*(data[-1,0] - data[0,-1]))*timestep,data[0,-1],data[-1,0],color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.vlines(data[-1,0],z[-1],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.vlines(data[0,-1],z[0],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+
+        elif simulation_name == "unsaturated_column":
+            s_s= 1.0 #Complete saturation
+            Initial_head = 1 #m
+ 
+            init_sat = sw_vG(Initial_head,Saturation_N)
+            sat_array = np.linspace(s_r,init_sat,10000)  #Saturation array
+            print(timestep)
+            lambda_vG_calc = lambda_vG(sat_array)  #Speed of rarefaction lambda_vG_numeric or lambda_vG
+            lambda_vG_num_calc = lambda_vG_numeric(sat_array)  #Speed of rarefaction lambda_vG_numeric or lambda_vG
+
+            print(np.linalg.norm(lambda_vG_numeric(sat_array)-lambda_vG(sat_array)))
+            #print(np.linalg.norm(lambda_vG_v2(sat_array)-lambda_vG(sat_array)))
+
+
+            #plt.plot(sat_array, z[-1]-lambda_vG_calc*timestep,0,1,color=green,linestyle='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.plot(sat_array, z[-1]-lambda_vG_num_calc*timestep,0,1,color=red,linestyle='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+   
+            #print('Rising perch water table location',z[0]+(phi*(data[-1,0]-s_s))*timestep,'m') 
+            plt.hlines(z[0]+(-kr_vG(Initial_head,RelPerm_N)*Ks)/(phi*(sw_vG(Initial_head,RelPerm_N)-s_s))*timestep, init_sat,s_s,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.vlines(s_s,z[0],z[0]+(-kr_vG(Initial_head,RelPerm_N)*Ks)/(phi*(sw_vG(Initial_head,RelPerm_N)-s_s))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            plt.vlines(init_sat,z[0]+(-kr_vG(Initial_head,RelPerm_N)*Ks)/(phi*(sw_vG(Initial_head,RelPerm_N)-s_s))*timestep,z[-1]-lambda_vG_numeric(init_sat)*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            
+            #plt.vlines(data[-1,0],z[-1],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+            #plt.vlines(data[0,-1],z[0],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
+
     plt.xlabel(f"{title}")
     plt.ylabel('z [m]')
     plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
