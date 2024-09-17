@@ -265,5 +265,3 @@ plt.xlabel(r'$s_w(h)$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 plt.legend()
 plt.savefig(f's_w_vs_kr_vG.pdf',bbox_inches='tight', dpi = 600)
-
-
