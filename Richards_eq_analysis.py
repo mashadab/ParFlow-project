@@ -298,3 +298,53 @@ kr_vG= lambda h,n: (1-(np.abs(alpha_vG*h)**(n-1))/(1+np.abs(alpha_vG*h)**n)**(1-
 print('kr=',kr_vG(x,N_RelPerm))
 
 print('head',x,' m')
+
+
+#Derivative of kr with se
+#van-Genuchten
+n = 10000
+m = 1 - 1/n
+init_sat = 0.765685424949238
+kr_vG= lambda h,n: (1-(np.abs(alpha_vG*h)**(n-1))/(1+np.abs(alpha_vG*h)**n)**(1-1/n))**2.0/((1 + np.abs(alpha_vG*h)**n)**((1-1/n)/2)) #kr, head in cms
+sw_vG= lambda h,n: (s_s - s_r)/((1 + np.abs(alpha_vG*h)**n)**(1-1/n))+s_r
+se_vG= lambda sw: ((sw - s_r)/(s_s - s_r))
+kr_sat_vG= lambda sw: se_vG(sw)**(1/2)*(1-(1-se_vG(sw)**(1/m))**m)**2
+
+#derivatives
+delta_sw = 1e-10
+dkrbydsw_vG_numeric = lambda sw: ( kr_sat_vG(sw +delta_sw) - kr_sat_vG(sw))/(delta_sw)  #numerical
+dkrbydsw_vG_analytic= lambda sw: 1/(s_s - s_r) * (2*se_vG(sw)*((se_vG(sw))**(1/m)*(1 - (se_vG(sw))**(1/m))**m + ((se_vG(sw))**(1/m) - 1)*((1 - (se_vG(sw))**(1/m))**m - 1))*((1 - (se_vG(sw))**(1/m))**m - 1)/((se_vG(sw))**(1/m) - 1))  #analytical
+dkrbydsw_vG_analytic2= lambda sw: 1/(s_s - s_r) * (2*se_vG(sw)**(1/m)*(1 - se_vG(sw)**(1/m))**m*(1 - (1 - se_vG(sw)**(1/m))**m)/(se_vG(sw)**0.5*(1 - se_vG(sw)**(1/m))) + 0.5*(1 - (1 - se_vG(sw)**(1/m))**m)**2/se_vG(sw)**0.5)
+
+#Simplified
+dkrbydsw_vG_analytic2simplified= lambda sw: 1/(s_s - s_r) * (0.5*(se_vG(sw))**0.5*((se_vG(sw))**(1/m) - 1)*((1 - (se_vG(sw))**(1/m))**m - 1) + 2*(se_vG(sw))**((0.5*m + 1)/m)*(1 - (se_vG(sw))**(1/m))**m)*((1 - (se_vG(sw))**(1/m))**m - 1)/((se_vG(sw))**1.0*((se_vG(sw))**(1/m) - 1))
+
+#Non-simplified Analytic 3
+dkrbydsw_vG_analytic3= lambda sw: 1/(s_s - s_r) * ((-(se_vG(sw))*(1 - (se_vG(sw))**(1/m))**m + (se_vG(sw)))*(2*(se_vG(sw))**(1/m)*(1 - (se_vG(sw))**(1/m))**m/(1 - (se_vG(sw))**(1/m)) - 2*(1 - (se_vG(sw))**(1/m))**m + 2))
+
+#Simplified Analytic 3
+dkrbydsw_vG_analytic3simplified= lambda sw: 1/(s_s - s_r) * (2*(se_vG(sw))*((se_vG(sw))**(1/m)*(1 - (se_vG(sw))**(1/m))**m + ((se_vG(sw))**(1/m) - 1)*((1 - (se_vG(sw))**(1/m))**m - 1))*((1 - (se_vG(sw))**(1/m))**m - 1)/((se_vG(sw))**(1/m) - 1))
+
+    #1/(s_s - s_r) * (2* (se_vG(sw) - (se_vG(sw))*(1 - (se_vG(sw))**(1/m))**m) * (1 - (1-(se_vG(sw))**(1/m))**m + (se_vG(sw))**(1/m)*(1-(se_vG(sw))**(1/m))) )
+
+
+fig = plt.figure(figsize=(5,7.5) , dpi=100)
+#sat_array = np.linspace(s_r,s_s,10000)  #Saturation array
+sat_array = np.linspace(s_r,init_sat,10000)  #Saturation array
+plt.plot(sat_array, dkrbydsw_vG_numeric(sat_array),color='k',linestyle='-',label='Numeric',alpha=0.5)   
+plt.plot(sat_array, dkrbydsw_vG_analytic(sat_array),'r--',label='Analytic pen-paper')
+plt.plot(sat_array, dkrbydsw_vG_analytic2(sat_array),'c-',label='Analytic2')
+plt.plot(sat_array, dkrbydsw_vG_analytic2simplified(sat_array),'b--',label='Analytic2_simplified')
+plt.plot(sat_array, dkrbydsw_vG_analytic3(sat_array),'m-',label='Analytic3')
+plt.plot(sat_array, dkrbydsw_vG_analytic3simplified(sat_array),'g-.',label='Analytic3 simplified')
+plt.ylabel(r'd$k_r/$d$s_w$')
+plt.xlabel(r'$s_w$')
+plt.xlim([s_r,s_s])
+#plt.ylim([-0.01,1.01])
+plt.tight_layout()
+plt.legend(loc='best',frameon=False)
+
+print(np.linalg.norm(dkrbydsw_vG_numeric(sat_array)-dkrbydsw_vG_analytic(sat_array)))
+
+
+print('Analytic 2and 2 simplified work match with the numeric results (work) but Analytic 3 and 3 simplified match with pen and paper solution. ')
