@@ -42,7 +42,7 @@ Th= lambda h: alpha*(theta_s - theta_r)/(alpha + np.abs(h)**gamma)+theta_r #Thet
 dKdh= lambda h: Ks*gamma*A*np.abs(h)**(gamma-1.0)/(A + np.abs(h)**gamma)**2.0   #head in cms
 dCdh= lambda h: gamma*alpha*(theta_s - theta_r)*(2*np.abs(h)**(gamma-1)/(alpha + np.abs(h)**gamma)**3.0 + (gamma - 1.0)*np.abs(h)**(gamma - 2.0)/(alpha + np.abs(h)**gamma)**2.0)
 
-h = np.linspace(-100,0,10000)
+h = np.linspace(-100,0,100000)
 
 '''
 #plotting
@@ -185,7 +185,7 @@ plt.plot(sw_vG_ideal(h),h,'--',color='r',alpha=1.0,label=r'kinematic')
 manager = plt.get_current_fig_manager()
 manager.window.showMaximized()
 plt.ylabel(r'$h$ [cm]')
-plt.xlim([s_r,s_s])
+plt.xlim([s_r-0.01,s_s+0.01])
 plt.ylim([np.min(h),np.max(h)])
 plt.xlabel(r'$s_w$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
@@ -220,7 +220,7 @@ plt.plot(sw_vG_ideal(h),h,'--',color='r',alpha=1.0,label=r'kinematic')
 manager = plt.get_current_fig_manager()
 manager.window.showMaximized()
 plt.ylabel(r'$h$ [cm]')
-plt.xlim([s_r,s_s])
+plt.xlim([s_r-0.01,s_s+0.01])
 plt.ylim([np.min(h),np.max(h)])
 plt.xlabel(r'$s_w$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
@@ -259,7 +259,7 @@ plt.plot(sat_arr,kr_haverkamp_ideal_sat(sat_arr),'--',color='r',alpha=1.0,label=
 manager = plt.get_current_fig_manager()
 manager.window.showMaximized()
 plt.ylabel(r'$k_r(h)$')
-plt.xlim([s_r,s_s])
+plt.xlim([s_r-0.01,s_s+0.01])
 plt.ylim([-0.01,1.01])
 plt.xlabel(r'$s_w(h)$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
@@ -274,14 +274,14 @@ plt.plot(sw_vG(h,10),kr_vG(h,10),'-',color='k',alpha=0.6,label=r'$n=10$')
 plt.plot(sw_vG(h,50),kr_vG(h,50),'-',color='k',alpha=0.8,label=r'$n=50$')
 plt.plot(sw_vG(h,100),kr_vG(h,100),'-',color='k',alpha=1.0,label=r'$n=100$')
 #plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,1),'--',color='r',alpha=0.2,label=r'kinematic')
-plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,2),'--',color='r',alpha=0.4)
+plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,2),'--',color='r',alpha=0.4,label=r'kinematic')
 plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,10),'--',color='r',alpha=0.6)
 plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,50),'--',color='r',alpha=0.8)
 plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,100),'--',color='r',alpha=1.0)
 manager = plt.get_current_fig_manager()
 manager.window.showMaximized()
 plt.ylabel(r'$k_r(h)$')
-plt.xlim([s_r,s_s])
+plt.xlim([s_r-0.01,s_s+0.01])
 plt.ylim([-0.01,1.01])
 plt.xlabel(r'$s_w(h)$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
@@ -343,8 +343,78 @@ plt.xlim([s_r,s_s])
 #plt.ylim([-0.01,1.01])
 plt.tight_layout()
 plt.legend(loc='best',frameon=False)
+plt.savefig(f's_w_vs_dkrdsw_vG.pdf',bbox_inches='tight', dpi = 600)
+
 
 print(np.linalg.norm(dkrbydsw_vG_numeric(sat_array)-dkrbydsw_vG_analytic(sat_array)))
 
 
 print('Analytic 2and 2 simplified work match with the numeric results (work) but Analytic 3 and 3 simplified match with pen and paper solution. ')
+
+
+
+#Effect of alpha on the simulations
+h = np.linspace(-10,0,10000)
+s_s = 1.0; s_r = 0.2
+sat_arr = np.linspace(s_r,s_s,10000)
+
+#Van Genuchten
+sw_vG_alpha= lambda h,n,alpha: (s_s - s_r)/((1 + np.abs(alpha*h)**n)**(1-1/n))+s_r #sw, head in cms
+kr_vG_alpha= lambda h,n,alpha: (1-(np.abs(alpha*h)**(n-1))/(1+np.abs(alpha*h)**n)**(1-1/n))**2.0/((1 + np.abs(alpha*h)**n)**((1-1/n)/2)) #kr, head in cms
+
+
+fig = plt.figure(figsize=(7.5,5) , dpi=100)
+plt.plot(sw_vG_alpha(h,2,1),h,'-',color='k',alpha=0.2,label=r'$\alpha=1$')
+plt.plot(sw_vG_alpha(h,2,10),h,'-',color='k',alpha=0.4,label=r'$\alpha=10$')
+plt.plot(sw_vG_alpha(h,2,100),h,'-',color='k',alpha=0.6,label=r'$\alpha=100$')
+plt.plot(sw_vG_alpha(h,2,1000),h,'-',color='k',alpha=0.8,label=r'$\alpha=1000$')
+plt.plot(sw_vG_alpha(h,2,10000),h,'-',color='k',alpha=1.0,label=r'$\alpha=10000$')
+plt.plot(sw_vG_ideal(h),h,'--',color='r',alpha=1.0,label=r'kinematic')
+manager = plt.get_current_fig_manager()
+manager.window.showMaximized()
+plt.ylabel(r'$h$ [cm]')
+plt.xlim([s_r-0.01,s_s+0.01])
+plt.ylim([np.min(h),np.max(h)])
+plt.xlabel(r'$s_w$')
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.legend()
+plt.savefig(f's_w_vs_head_vG_different_alpha_N=2.pdf',bbox_inches='tight', dpi = 600)
+
+
+fig = plt.figure(figsize=(7.5,5) , dpi=100)
+plt.plot(kr_vG_alpha(h,2,1),h,'-',color='k',alpha=0.2,label=r'$\alpha=1$')
+plt.plot(kr_vG_alpha(h,2,10),h,'-',color='k',alpha=0.4,label=r'$\alpha=10$')
+plt.plot(kr_vG_alpha(h,2,100),h,'-',color='k',alpha=0.6,label=r'$\alpha=100$')
+plt.plot(kr_vG_alpha(h,2,1000),h,'-',color='k',alpha=0.8,label=r'$\alpha=1000$')
+plt.plot(kr_vG_alpha(h,2,10000),h,'-',color='k',alpha=1.0,label=r'$\alpha=10000$')
+plt.plot(kr_vG_ideal(h),h,'--',color='r',alpha=1.0,label=r'kinematic')
+manager = plt.get_current_fig_manager()
+manager.window.showMaximized()
+plt.ylabel(r'$h$ [cm]')
+plt.xlim([-0.01,1.01])
+plt.ylim([np.min(h),np.max(h)])
+plt.xlabel(r'$k_r$')
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.legend()
+plt.savefig(f'kr_vs_head_vG_different_alpha_N=2.pdf',bbox_inches='tight', dpi = 600)
+
+
+sat_arr = np.linspace(s_r,s_s,100000)
+h = np.linspace(-100,0,10000000)
+fig = plt.figure(figsize=(7.5,5) , dpi=100)
+plt.plot(sw_vG_alpha(h,2,1),kr_vG_alpha(h,2,1),'-',color='k',alpha=0.2,label=r'$\alpha=1$')
+plt.plot(sw_vG_alpha(h,2,10),kr_vG_alpha(h,2,10),'-',color='k',alpha=0.4,label=r'$\alpha=10$')
+plt.plot(sw_vG_alpha(h,2,100),kr_vG_alpha(h,2,100),'-',color='k',alpha=0.6,label=r'$\alpha=100$')
+plt.plot(sw_vG_alpha(h,2,1000),kr_vG_alpha(h,2,1000),'X',color='k',alpha=0.8,label=r'$\alpha=1000$')
+plt.plot(sw_vG_alpha(h,2,10000),kr_vG_alpha(h,2,10000),'o',color='k',alpha=1.0,label=r'$\alpha=10000$')
+#plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,1),'--',color='r',alpha=0.2,label=r'kinematic')
+plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,2),'--',color='r',alpha=1,label=r'kinematic')
+manager = plt.get_current_fig_manager()
+manager.window.showMaximized()
+plt.ylabel(r'$k_r(h)$')
+plt.xlim([s_r-0.01,s_s+0.01])
+plt.ylim([-0.01,1.01])
+plt.xlabel(r'$s_w(h)$')
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.legend()
+plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.pdf',bbox_inches='tight', dpi = 600)
