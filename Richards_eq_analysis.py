@@ -42,7 +42,7 @@ Th= lambda h: alpha*(theta_s - theta_r)/(alpha + np.abs(h)**gamma)+theta_r #Thet
 dKdh= lambda h: Ks*gamma*A*np.abs(h)**(gamma-1.0)/(A + np.abs(h)**gamma)**2.0   #head in cms
 dCdh= lambda h: gamma*alpha*(theta_s - theta_r)*(2*np.abs(h)**(gamma-1)/(alpha + np.abs(h)**gamma)**3.0 + (gamma - 1.0)*np.abs(h)**(gamma - 2.0)/(alpha + np.abs(h)**gamma)**2.0)
 
-h = np.linspace(-100,0,100000)
+h = np.linspace(-100,0,10000)
 
 '''
 #plotting
@@ -400,13 +400,13 @@ plt.savefig(f'kr_vs_head_vG_different_alpha_N=2.pdf',bbox_inches='tight', dpi = 
 
 
 sat_arr = np.linspace(s_r,s_s,100000)
-h = np.linspace(-100,0,10000000)
+h = np.linspace(-100,0,100000)
 fig = plt.figure(figsize=(7.5,5) , dpi=100)
 plt.plot(sw_vG_alpha(h,2,1),kr_vG_alpha(h,2,1),'-',color='k',alpha=0.2,label=r'$\alpha=1$')
 plt.plot(sw_vG_alpha(h,2,10),kr_vG_alpha(h,2,10),'-',color='k',alpha=0.4,label=r'$\alpha=10$')
-plt.plot(sw_vG_alpha(h,2,100),kr_vG_alpha(h,2,100),'-',color='k',alpha=0.6,label=r'$\alpha=100$')
-plt.plot(sw_vG_alpha(h,2,1000),kr_vG_alpha(h,2,1000),'X',color='k',alpha=0.8,label=r'$\alpha=1000$')
-plt.plot(sw_vG_alpha(h,2,10000),kr_vG_alpha(h,2,10000),'o',color='k',alpha=1.0,label=r'$\alpha=10000$')
+plt.plot(sw_vG_alpha(h,2,100),kr_vG_alpha(h,2,100),'-',color='k',alpha = 0.6,label=r'$\alpha=100$')
+plt.plot(sw_vG_alpha(h,2,1000),kr_vG_alpha(h,2,1000),'x',color='k',alpha=0.8,markersize=10,label=r'$\alpha=1000$')
+plt.plot(sw_vG_alpha(h,2,10000),kr_vG_alpha(h,2,10000),'o',color='k',alpha=1,markersize=10,label=r'$\alpha=10000$')
 #plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,1),'--',color='r',alpha=0.2,label=r'kinematic')
 plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,2),'--',color='r',alpha=1,label=r'kinematic')
 manager = plt.get_current_fig_manager()
@@ -418,3 +418,6 @@ plt.xlabel(r'$s_w(h)$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 plt.legend()
 plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.pdf',bbox_inches='tight', dpi = 600)
+
+
+
