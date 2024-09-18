@@ -316,14 +316,16 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
 
 
         if simulation_name == "wetting":
-            boundary_sat_init = 0.7
-            Applied_flux = -Ks * kr_sat_vG(boundary_sat_init) #Applied flux = -0.001 m/h (downward direction)
+            #boundary_sat_init = 0.7
+            Applied_flux = -0.005#Ks * kr_sat_vG(boundary_sat_init) #Applied flux = -0.001 m/h (downward direction)
 
             kr_vG_invert= lambda sw: Ks*kr_sat_vG(sw)+Applied_flux
-            boundary_sat = fsolve(kr_vG_invert,0.5)  #calculate saturation using inversion
+            boundary_sat = fsolve(kr_vG_invert,0.9)  #calculate saturation using inversion
 
             Initial_head = 100 #m  initial head for the column (m)
             init_sat = sw_vG(Initial_head,Saturation_N) #initial saturation
+
+            #boundary_sat = boundary_sat_init
 
             print('Initial saturation', init_sat)
             print('Boundary saturation', boundary_sat)
@@ -335,9 +337,12 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
 
         elif simulation_name == "unsaturated_column":
             s_s= 1.0 #Complete saturation
-            Initial_head = 1 #m
- 
-            init_sat = sw_vG(Initial_head,Saturation_N)
+            init_sat = 0.7#sw_vG(Initial_head,Saturation_N)
+            #Initial_head = 1 #m
+            sw_vG= lambda h,n: (s_s - s_r)/((1 + abs(alpha_vG*h)**n)**(1-1/n))+s_r #sw, head in cms
+
+            h_from_sat = lambda h: sw_vG(h,Saturation_N) - init_sat
+            Initial_head = np.abs(fsolve(h_from_sat,1,xtol=1e-10))
             print(init_sat)
             sat_array = np.linspace(s_r,init_sat,10000)  #Saturation array
             print(timestep)
@@ -360,7 +365,7 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
             
             #plt.vlines(data[-1,0],z[-1],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
             #plt.vlines(data[0,-1],z[0],z[-1]+Applied_flux/(0.25*(data[-1,0]-0.2))*timestep,color=red,linestyles='--',alpha=(time_array.index(timestep)+1)/(len(time_array)+1))
-
+    plt.xlim([s_r-0.01,s_s+0.01])
     plt.xlabel(f"{title}")
     plt.ylabel('z [m]')
     plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
