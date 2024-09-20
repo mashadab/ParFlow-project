@@ -379,6 +379,7 @@ plt.xlabel(r'$s_w$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 plt.legend()
 plt.savefig(f's_w_vs_head_vG_different_alpha_N=2.pdf',bbox_inches='tight', dpi = 600)
+plt.savefig(f's_w_vs_head_vG_different_alpha_N=2.png',bbox_inches='tight', dpi = 600)
 
 
 fig = plt.figure(figsize=(7.5,5) , dpi=100)
@@ -397,6 +398,7 @@ plt.xlabel(r'$k_r$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 plt.legend()
 plt.savefig(f'kr_vs_head_vG_different_alpha_N=2.pdf',bbox_inches='tight', dpi = 600)
+plt.savefig(f'kr_vs_head_vG_different_alpha_N=2.png',bbox_inches='tight', dpi = 600)
 
 
 sat_arr = np.linspace(s_r,s_s,100000)
@@ -418,6 +420,7 @@ plt.xlabel(r'$s_w(h)$')
 plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 plt.legend()
 plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.pdf',bbox_inches='tight', dpi = 600)
+plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.png',bbox_inches='tight', dpi = 600)
 
 
 
