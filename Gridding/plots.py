@@ -221,7 +221,7 @@ def plot_vert_var(run_directory, variable, timestep=0):
 
 
 
-def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturation_N,simulation_name):
+def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturation_N,alpha_vG,simulation_name):
     """Function to plot output from a ParFlow run"""
 
     # Load the run from the file, this is the same as the run defined above
@@ -269,7 +269,7 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
     #Soil properties from input file
     Ks = 0.01465 #Saturated hydraulic conductivity = 0.01465 m/h
     phi = 0.25 #porosity (see Pfidb)
-    alpha_vG = 1.0
+    #alpha_vG = 1.0
     s_s = 1.0; s_r = 0.2 #Saturation saturated and residual
     m = 1-1/RelPerm_N
 
@@ -370,7 +370,7 @@ def plot_vert_var_combined(run_directory, variable, time_array,RelPerm_N,Saturat
     plt.ylabel('z [m]')
     plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
     plt.legend(loc='best', frameon=False)
-    plt.savefig(f'{simulation_name}_NRelPerm{RelPerm_N}_NSaturation{Saturation_N}_s_w_vs_depth.pdf',bbox_inches='tight', dpi = 600)
+    plt.savefig(f'{simulation_name}_NRelPerm{RelPerm_N}_NSaturation{Saturation_N}_alphavG{alpha_vG}_s_w_vs_depth.pdf',bbox_inches='tight', dpi = 600)
     plt.show()
 
 
