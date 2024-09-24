@@ -6,15 +6,15 @@ import shutil
 from parflow.tools.fs import mkdir, cp, chdir, get_absolute_path, rm, exists
 
 print(os.getcwd())
-relative_path_to_runfolder = 'output_wb'
+relative_path_to_runfolder = 'output_water_balance'
 base = get_absolute_path(relative_path_to_runfolder)
 mkdir(base)
 print(base)
 
 # copy CLM files
-cp('inputs/drv_clmin.dat', 'output_wb/drv_clmin.dat')
-cp('inputs/drv_vegm.dat', 'output_wb/drv_vegm.dat')
-cp('inputs/drv_vegp.dat', 'output_wb/drv_vegp.dat')
+cp('inputs/drv_clmin.dat', 'output_water_balance/drv_clmin.dat')
+cp('inputs/drv_vegm.dat', 'output_water_balance/drv_vegm.dat')
+cp('inputs/drv_vegp.dat', 'output_water_balance/drv_vegp.dat')
 
 alpha_vG = 100  #Set alpha for vanGenuchten model
 
@@ -22,9 +22,9 @@ alpha_vG = 100  #Set alpha for vanGenuchten model
 PFCLM_SC = Run("PFCLM_SC")
 
 
-stopt = 8760
+#stopt = 8760
 ## run only for 24 hours for the water balance example
-#stopt = 24
+stopt = 24
 
 #-----------------------------------------------------------------------------
 # File input version number
@@ -336,13 +336,13 @@ PFCLM_SC.Solver.WriteSiloSlopes          = False
 PFCLM_SC.Solver.WriteSiloSaturation      = False
 
 #write output in NetCDF
-write_netcdf = True
-PFCLM_SC.NetCDF.NumStepsPerFile          = 240
+write_netcdf = False
+#PFCLM_SC.NetCDF.NumStepsPerFile          = 240
 PFCLM_SC.NetCDF.WritePressure            = write_netcdf
 PFCLM_SC.NetCDF.WriteSubsurface          = False
 PFCLM_SC.NetCDF.WriteSaturation          = write_netcdf
 PFCLM_SC.NetCDF.WriteCLM                 = write_netcdf
-PFCLM_SC.NetCDF.CLMNumStepsPerFile       = 240
+#PFCLM_SC.NetCDF.CLMNumStepsPerFile       = 240
 
 
 #---------------------------------------------------
@@ -400,5 +400,3 @@ PFCLM_SC.Geom.domain.ICPressure.RefPatch = 'z_upper'
 #-----------------------------------------------------------------------------
 
 PFCLM_SC.run(working_directory=base)
-
-
