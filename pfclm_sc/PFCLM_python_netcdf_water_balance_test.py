@@ -16,7 +16,7 @@ cp('inputs/drv_clmin.dat', 'output_water_balance/drv_clmin.dat')
 cp('inputs/drv_vegm.dat', 'output_water_balance/drv_vegm.dat')
 cp('inputs/drv_vegp.dat', 'output_water_balance/drv_vegp.dat')
 
-alpha_vG = 100  #Set alpha for vanGenuchten model
+alpha_vG = 2  #Set alpha for vanGenuchten model
 
 # Set our Run Name 
 PFCLM_SC = Run("PFCLM_SC")
