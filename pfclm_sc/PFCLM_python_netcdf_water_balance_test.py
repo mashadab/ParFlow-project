@@ -17,7 +17,9 @@ cp('inputs/drv_vegm.dat', 'output_water_balance/drv_vegm.dat')
 cp('inputs/drv_vegp.dat', 'output_water_balance/drv_vegp.dat')
 
 alpha_vG = 2  #Set alpha for vanGenuchten model
-head_table = -100 #location of water table [m] #-1000.0#-1.0 #-10.0  #
+head_table = -1 #location of water table [m] #-1000.0#-1.0 #-10.0  #
+simulation_type = 'same_saturation'  #Simulations type: same_head vs same_sat
+
 
 # Set our Run Name 
 PFCLM_SC = Run("PFCLM_SC")
@@ -389,12 +391,19 @@ PFCLM_SC.Solver.CLM.SingleFile      = True
 #---------------------------------------------------
 # Initial conditions: water pressure
 #---------------------------------------------------
+if simulation_type == 'same_head':
+    PFCLM_SC.ICPressure.Type                 = 'HydroStaticPatch' #'Constant' 
+    PFCLM_SC.ICPressure.GeomNames            = 'domain'
+    PFCLM_SC.Geom.domain.ICPressure.Value    = head_table
+    PFCLM_SC.Geom.domain.ICPressure.RefGeom  = 'domain'
+    PFCLM_SC.Geom.domain.ICPressure.RefPatch = 'z_upper'
 
-PFCLM_SC.ICPressure.Type                 = 'HydroStaticPatch' #'Constant' 
-PFCLM_SC.ICPressure.GeomNames            = 'domain'
-PFCLM_SC.Geom.domain.ICPressure.Value    = head_table
-PFCLM_SC.Geom.domain.ICPressure.RefGeom  = 'domain'
-PFCLM_SC.Geom.domain.ICPressure.RefPatch = 'z_upper'
+if simulation_type == 'same_saturation':
+    filename=f"ic_pressure_WTD{head_table}_alpha{alpha_vG}.pfb"
+    print(filename)
+    PFCLM_SC.ICPressure.Type                 = "PFBFile"
+    PFCLM_SC.ICPressure.GeomNames            = 'domain'
+    PFCLM_SC.Geom.domain.ICPressure.FileName = filename
 
 #-----------------------------------------------------------------------------
 # Run ParFlow 
