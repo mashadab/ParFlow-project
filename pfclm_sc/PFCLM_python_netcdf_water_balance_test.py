@@ -16,9 +16,9 @@ cp('inputs/drv_clmin.dat', 'output_water_balance/drv_clmin.dat')
 cp('inputs/drv_vegm.dat', 'output_water_balance/drv_vegm.dat')
 cp('inputs/drv_vegp.dat', 'output_water_balance/drv_vegp.dat')
 
-alpha_vG = 2  #Set alpha for vanGenuchten model
-head_table = -1 #location of water table [m] #-1000.0#-1.0 #-10.0  #
-simulation_type = 'same_saturation'  #Simulations type: same_head vs same_sat
+alpha_vG = 100 #Set alpha for vanGenuchten model
+head_table = -100 #location of water table [m] #-1000.0#-1.0 #-10.0  #
+simulation_type = 'same_head'  #Simulations type: same_head vs same_sat
 
 
 # Set our Run Name 
