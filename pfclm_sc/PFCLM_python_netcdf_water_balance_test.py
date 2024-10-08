@@ -17,6 +17,7 @@ cp('inputs/drv_vegm.dat', 'output_water_balance/drv_vegm.dat')
 cp('inputs/drv_vegp.dat', 'output_water_balance/drv_vegp.dat')
 
 alpha_vG = 2  #Set alpha for vanGenuchten model
+head_table = -100 #location of water table [m] #-1000.0#-1.0 #-10.0  #
 
 # Set our Run Name 
 PFCLM_SC = Run("PFCLM_SC")
@@ -389,9 +390,9 @@ PFCLM_SC.Solver.CLM.SingleFile      = True
 # Initial conditions: water pressure
 #---------------------------------------------------
 
-PFCLM_SC.ICPressure.Type                 = 'HydroStaticPatch'
+PFCLM_SC.ICPressure.Type                 = 'HydroStaticPatch' #'Constant' 
 PFCLM_SC.ICPressure.GeomNames            = 'domain'
-PFCLM_SC.Geom.domain.ICPressure.Value    = -1.0
+PFCLM_SC.Geom.domain.ICPressure.Value    = head_table
 PFCLM_SC.Geom.domain.ICPressure.RefGeom  = 'domain'
 PFCLM_SC.Geom.domain.ICPressure.RefPatch = 'z_upper'
 
