@@ -16,8 +16,8 @@ cp('inputs/drv_clmin.dat', 'output_water_balance/drv_clmin.dat')
 cp('inputs/drv_vegm.dat', 'output_water_balance/drv_vegm.dat')
 cp('inputs/drv_vegp.dat', 'output_water_balance/drv_vegp.dat')
 
-alpha_vG = 100 #Set alpha for vanGenuchten model
-head_table = -100 #location of water table [m] #-1000.0#-1.0 #-10.0  #
+alpha_vG = 2 #Set alpha for vanGenuchten model
+head_table = -1 #location of water table [m]
 simulation_type = 'same_head'  #Simulations type: same_head vs same_sat
 
 
@@ -408,5 +408,9 @@ if simulation_type == 'same_saturation':
 #-----------------------------------------------------------------------------
 # Run ParFlow 
 #-----------------------------------------------------------------------------
-
+import time
+start_= time.time()
 PFCLM_SC.run(working_directory=base)
+end_  = time.time()
+
+print("The code takes", end_ - start_," seconds")
