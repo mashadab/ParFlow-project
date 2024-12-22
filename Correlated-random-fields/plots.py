@@ -99,7 +99,7 @@ def plot_domain(run_directory, variable, timestep=0):
     plt.show()
 
 
-def plot_domain_corr_rnd(run_directory, variable, timestep=0):
+def plot_domain_corr_rnd(run_directory, variable, timestep=0,alpha_vG=1):
     """Function to plot output from a ParFlow run"""
 
     # Load the run from the file, this is the same as the run defined above
@@ -192,6 +192,7 @@ def plot_domain_corr_rnd(run_directory, variable, timestep=0):
         ax.set_title(f"{title}")
     else:
         ax.set_title(f"{title} at t={timestep}")
+    plt.savefig(f'Rnd_corr_fields_{variable}_alphavG{alpha_vG}.pdf',bbox_inches='tight', dpi = 600)
     plt.show()
 
 
