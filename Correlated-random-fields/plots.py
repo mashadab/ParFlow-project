@@ -192,7 +192,8 @@ def plot_domain_corr_rnd(run_directory, variable, timestep=0,alpha_vG=1):
         ax.set_title(f"{title}")
     else:
         ax.set_title(f"{title} at t={timestep}")
-    plt.savefig(f'Rnd_corr_fields_{variable}_alphavG{alpha_vG}.pdf',bbox_inches='tight', dpi = 600)
+    plt.savefig(f'Rnd_corr_fields_{variable}_alphavG{alpha_vG}_time{timestep}.pdf',bbox_inches='tight', dpi = 600)
+    np.savez(f'Rnd_corr_fields_{variable}_alphavG{alpha_vG}_time{timestep}',x, z, data)  
     plt.show()
 
 
