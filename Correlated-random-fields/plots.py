@@ -175,13 +175,13 @@ def plot_domain_corr_rnd(run_directory, variable, timestep=0,alpha_vG=1):
         im = ax.pcolormesh(x, z, data, vmin=vmin, vmax=vmax, cmap='plasma_r')
     plt.colorbar(im, ax=ax, label=label)
     
-    # Include mesh lines
-    if variable == "mannings":
-        ax.hlines(y,x[0],x[-1],colors='white',linewidth=0.5)
-        ax.vlines(x,y[0],y[-1],colors='white',linewidth=0.5)
-    else:
-        ax.hlines(z,x[0],x[-1],colors='white',linewidth=0.5)
-        ax.vlines(x,z[0],z[-1],colors='white',linewidth=0.5)
+    # # Include mesh lines
+    # if variable == "mannings":
+    #     ax.hlines(y,x[0],x[-1],colors='white',linewidth=0.5)
+    #     ax.vlines(x,y[0],y[-1],colors='white',linewidth=0.5)
+    # else:
+    #     ax.hlines(z,x[0],x[-1],colors='white',linewidth=0.5)
+    #     ax.vlines(x,z[0],z[-1],colors='white',linewidth=0.5)
     
     ax.set_xlabel('x [m]')
     if variable == "mannings":
