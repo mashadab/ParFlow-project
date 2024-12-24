@@ -171,6 +171,9 @@ def plot_domain_corr_rnd(run_directory, variable, timestep=0,alpha_vG=1):
 
     if variable == "mannings":
         im = ax.pcolormesh(x, y, data, vmin=vmin, vmax=vmax, cmap='plasma_r')
+    elif variable in ["x-permeability","z-permeability"]:
+        import matplotlib.colors as colors
+        im = ax.pcolormesh(x, z, data, norm=colors.LogNorm(vmin=data.min(), vmax=data.max()), cmap='plasma_r')       
     else:
         im = ax.pcolormesh(x, z, data, vmin=vmin, vmax=vmax, cmap='plasma_r')
     plt.colorbar(im, ax=ax, label=label)
@@ -188,7 +191,8 @@ def plot_domain_corr_rnd(run_directory, variable, timestep=0,alpha_vG=1):
         ax.set_ylabel('y [m]')
     else:
         ax.set_ylabel('z [m]')
-    if variable in ["porosity", "mannings"]:
+        
+    if variable in ["porosity", "manning","x-permeability","z-permeability"]:
         ax.set_title(f"{title}")
     else:
         ax.set_title(f"{title} at t={timestep}")
