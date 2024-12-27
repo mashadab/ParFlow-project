@@ -33,6 +33,7 @@ purple = [102/255 ,  45/255 , 145/255]
 brown  = [155/255 ,  118/255 ,  83/255]
 tan    = [199/255 , 178/255 , 153/255]
 gray   = [100/255 , 100/255 , 100/255]
+red_new = [190/255 ,30/255 ,45/255 ]
 
 #Constitutive equations
 K = lambda h: Ks*A/(A + np.abs(h)**gamma)  #head in cms
@@ -421,6 +422,63 @@ plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
 plt.legend()
 plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.pdf',bbox_inches='tight', dpi = 600)
 plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.png',bbox_inches='tight', dpi = 600)
+
+
+####################################################################################
+#Water table depth
+####################################################################################
+s_r = 0.2; s_s = 1
+z_WT = -1 #depth of water table
+phi0  = 0.3#porosity profile 
+
+sw_vG_alpha_wrt_WT = lambda z,z_WT,n,alpha: (s_s - s_r)/((1 + (alpha*(z-z_WT))**n)**(1-1/n))+s_r #sw, head in cms
+
+h = np.linspace(10,0,10000)
+fig = plt.figure(figsize=(4.5,6) , dpi=100)
+plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1),h+z_WT,'-',color=red_new,label=r'$\alpha=1$')
+plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100),h+z_WT,'-',color=blue,label=r'$\alpha=100$')
+plt.vlines(s_r,z_WT,np.max(h+z_WT),linestyle='--',color='k',label='Residual')
+plt.fill_betweenx(h+z_WT, sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100), sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1), alpha=0.2, color=blue, label='Excess sat.')
+plt.ylabel(r'Elevation, $z$ [m]')
+plt.xlabel(r'Saturation, $s_w(z)$')
+plt.xlim([-0.01,1.01])
+plt.ylim([z_WT-0.01,z_WT+np.max(h)+0.01])
+plt.legend(loc='upper right')
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.savefig(f's_w_with depth_different_alpha_N2.pdf',bbox_inches='tight', dpi = 600)
+plt.savefig(f's_w_with depth_different_alpha_N2.png',bbox_inches='tight', dpi = 600)
+
+
+Ic = lambda phi,z,z_WT,n,alpha: integrate.quad(lambda hh: phi(z) * sw_vG_alpha_wrt_WT(z,z_WT,n,alpha), z, z+z_WT)[0]
+
+
+#Cumulative water below
+phi = lambda z: phi0 #constant porosity
+
+AA = lambda hh: phi(hh + z_WT) * sw_vG_alpha_wrt_WT(hh+z_WT,z_WT,2,1)
+
+Ic_1 = np.zeros_like(h); Ic_100 = np.zeros_like(h) #cumulative infiltrations for alphas = 1 and 100
+import scipy.integrate as integrate
+for i in range(1,len(h)):
+    Ic_1[i] = integrate.quad(lambda hh: phi(hh + z_WT) * sw_vG_alpha_wrt_WT(hh+z_WT,z_WT,2,1), 0, h[i])[0]
+    Ic_100[i] = integrate.quad(lambda hh: phi(hh + z_WT) * sw_vG_alpha_wrt_WT(hh+z_WT,z_WT,2,100), 0, h[i])[0]
+
+fig = plt.figure(figsize=(4.5,6) , dpi=100)
+plt.plot(Ic_1[1:],h[1:]+z_WT,'-',color=red_new,label=r'$\alpha=1$')
+plt.plot(Ic_100[1:],h[1:]+z_WT,'-',color=blue,label=r'$\alpha=100$')
+plt.plot(s_r*(h)*phi(h+z_WT),h+z_WT,'--',color='k',label='Residual')
+plt.ylabel(r'Elevation, $z$ [m]')
+plt.xlabel(r'Excess water content, $[m^3/m^2]$')
+#plt.xlim([-0.01,1.01])
+plt.ylim([z_WT-0.01,z_WT+np.max(h)+0.01])
+plt.legend(loc='upper right')
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.savefig(f'Ic_with depth_different_alpha_N2.pdf',bbox_inches='tight', dpi = 600)
+plt.savefig(f'Ic_with depth_different_alpha_N2.png',bbox_inches='tight', dpi = 600)
+
+
+####################################################################################
+
 
 
 
