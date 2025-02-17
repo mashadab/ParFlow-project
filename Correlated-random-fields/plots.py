@@ -171,6 +171,13 @@ def plot_domain_corr_rnd(run_directory, variable, timestep=0,alpha_vG=1,Sigma_in
 
     if variable == "mannings":
         im = ax.pcolormesh(x, y, data, vmin=vmin, vmax=vmax, cmap='plasma_r')
+    elif variable == "satur":
+         if np.any(data<0.3):
+             im = ax.pcolormesh(x, z, data, vmin=0.2, vmax=0.3, cmap='Blues')  
+         elif np.any(data>0.5):
+             im = ax.pcolormesh(x, z, data, vmin=0.2, vmax=1, cmap='Blues')  
+         else:
+             im = ax.pcolormesh(x, z, data, vmin=0.2, vmax=0.5, cmap='Blues')     
     elif variable in ["x-permeability","z-permeability"]:
         import matplotlib.colors as colors
         im = ax.pcolormesh(x, z, data, norm=colors.LogNorm(vmin=data.min(), vmax=data.max()), cmap='plasma_r')       
