@@ -25,7 +25,7 @@ plt.rcParams.update({'font.family': 'Times'})
 
 #Colors
 brown  = [181/255 , 101/255, 29/255]
-red    = [255/255 ,255/255 ,255/255 ]
+red    = [190/255 ,30/255 ,45/255 ]
 blue   = [ 30/255 ,144/255 , 255/255 ]
 green  = [  0/255 , 166/255 ,  81/255]
 orange = [247/255 , 148/255 ,  30/255]
@@ -365,14 +365,13 @@ kr_vG_alpha= lambda h,n,alpha: (1-(np.abs(alpha*h)**(n-1))/(1+np.abs(alpha*h)**n
 
 
 fig = plt.figure(figsize=(7.5,5) , dpi=100)
-plt.plot(sw_vG_alpha(h,2,1),h,'-',color='k',alpha=0.2,label=r'$\alpha=1$')
-plt.plot(sw_vG_alpha(h,2,10),h,'-',color='k',alpha=0.4,label=r'$\alpha=10$')
-plt.plot(sw_vG_alpha(h,2,100),h,'-',color='k',alpha=0.6,label=r'$\alpha=100$')
-plt.plot(sw_vG_alpha(h,2,1000),h,'-',color='k',alpha=0.8,label=r'$\alpha=1000$')
-plt.plot(sw_vG_alpha(h,2,10000),h,'-',color='k',alpha=1.0,label=r'$\alpha=10000$')
-plt.plot(sw_vG_ideal(h),h,'--',color='r',alpha=1.0,label=r'kinematic')
-manager = plt.get_current_fig_manager()
-manager.window.showMaximized()
+plt.plot(sw_vG_alpha(h,2,1),h,'-',color='k',alpha=0.25,label=r'$\alpha=1$',linewidth=3)
+plt.plot(sw_vG_alpha(h,2,10),h,'-',color='k',alpha=0.5,label=r'$\alpha=10$',linewidth=3)
+plt.plot(sw_vG_alpha(h,2,100),h,'-',color='k',alpha=0.75,label=r'$\alpha=100$',linewidth=3)
+plt.plot(sw_vG_alpha(h,2,1000),h,'-',color='k',alpha=1,label=r'$\alpha=1000$',linewidth=3)
+plt.plot(sw_vG_ideal(h),h,'--',color=red,alpha=1.0,label=r'W/o capillarity',linewidth=3)
+#manager = plt.get_current_fig_manager()
+#manager.window.showMaximized()
 plt.ylabel(r'$h$ [cm]')
 plt.xlim([s_r-0.01,s_s+0.01])
 plt.ylim([np.min(h),np.max(h)])
@@ -384,14 +383,13 @@ plt.savefig(f's_w_vs_head_vG_different_alpha_N=2.png',bbox_inches='tight', dpi =
 
 
 fig = plt.figure(figsize=(7.5,5) , dpi=100)
-plt.plot(kr_vG_alpha(h,2,1),h,'-',color='k',alpha=0.2,label=r'$\alpha=1$')
-plt.plot(kr_vG_alpha(h,2,10),h,'-',color='k',alpha=0.4,label=r'$\alpha=10$')
-plt.plot(kr_vG_alpha(h,2,100),h,'-',color='k',alpha=0.6,label=r'$\alpha=100$')
-plt.plot(kr_vG_alpha(h,2,1000),h,'-',color='k',alpha=0.8,label=r'$\alpha=1000$')
-plt.plot(kr_vG_alpha(h,2,10000),h,'-',color='k',alpha=1.0,label=r'$\alpha=10000$')
-plt.plot(kr_vG_ideal(h),h,'--',color='r',alpha=1.0,label=r'kinematic')
-manager = plt.get_current_fig_manager()
-manager.window.showMaximized()
+plt.plot(kr_vG_alpha(h,2,1),h,'-',color='k',alpha=0.25,label=r'$\alpha=1$',linewidth=3)
+plt.plot(kr_vG_alpha(h,2,10),h,'-',color='k',alpha=0.5,label=r'$\alpha=10$',linewidth=3)
+plt.plot(kr_vG_alpha(h,2,100),h,'-',color='k',alpha=0.75,label=r'$\alpha=100$',linewidth=3)
+plt.plot(kr_vG_alpha(h,2,1000),h,'-',color='k',alpha=1,label=r'$\alpha=1000$',linewidth=3)
+plt.plot(kr_vG_ideal(h),h,'--',color=red,alpha=1.0,label=r'W/o capillarity',linewidth=3)
+#manager = plt.get_current_fig_manager()
+#manager.window.showMaximized()
 plt.ylabel(r'$h$ [cm]')
 plt.xlim([-0.01,1.01])
 plt.ylim([np.min(h),np.max(h)])
@@ -405,15 +403,14 @@ plt.savefig(f'kr_vs_head_vG_different_alpha_N=2.png',bbox_inches='tight', dpi = 
 sat_arr = np.linspace(s_r,s_s,100000)
 h = np.linspace(-100,0,100000)
 fig = plt.figure(figsize=(7.5,5) , dpi=100)
-plt.plot(sw_vG_alpha(h,2,1),kr_vG_alpha(h,2,1),'-',color='k',alpha=0.2,label=r'$\alpha=1$')
-plt.plot(sw_vG_alpha(h,2,10),kr_vG_alpha(h,2,10),'-',color='k',alpha=0.4,label=r'$\alpha=10$')
-plt.plot(sw_vG_alpha(h,2,100),kr_vG_alpha(h,2,100),'-',color='k',alpha = 0.6,label=r'$\alpha=100$')
-plt.plot(sw_vG_alpha(h,2,1000),kr_vG_alpha(h,2,1000),'x',color='k',alpha=0.8,markersize=10,label=r'$\alpha=1000$')
-plt.plot(sw_vG_alpha(h,2,10000),kr_vG_alpha(h,2,10000),'o',color='k',alpha=1,markersize=10,label=r'$\alpha=10000$')
+plt.plot(sw_vG_alpha(h,2,1),kr_vG_alpha(h,2,1),'-',color='k',alpha=0.25,label=r'$\alpha=1$',linewidth=3)
+plt.plot(sw_vG_alpha(h,2,10),kr_vG_alpha(h,2,10),'-',color='k',alpha=0.5,label=r'$\alpha=10$',linewidth=3)
+plt.plot(sw_vG_alpha(h,2,100),kr_vG_alpha(h,2,100),'-',color='k',alpha = 0.75,label=r'$\alpha=100$',linewidth=3)
+plt.plot(sw_vG_alpha(h,2,1000),kr_vG_alpha(h,2,1000),'x',color='k',alpha=1,markersize=10,label=r'$\alpha=1000$',linewidth=3)
 #plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,1),'--',color='r',alpha=0.2,label=r'kinematic')
-plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,2),'--',color='r',alpha=1,label=r'kinematic')
-manager = plt.get_current_fig_manager()
-manager.window.showMaximized()
+plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,2),'--',color=red,alpha=1,label=r'W/o capillarity',linewidth=3)
+#manager = plt.get_current_fig_manager()
+#manager.window.showMaximized()
 plt.ylabel(r'$k_r(h)$')
 plt.xlim([s_r-0.01,s_s+0.01])
 plt.ylim([-0.01,1.01])
@@ -428,18 +425,18 @@ plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.png',bbox_inches='tight', dpi = 60
 #Water table depth
 ####################################################################################
 s_r = 0.2; s_s = 1
-z_WT = -1 #depth of water table
+z_WT = 0 #depth of water table
 phi0  = 0.3#porosity profile 
 
 sw_vG_alpha_wrt_WT = lambda z,z_WT,n,alpha: (s_s - s_r)/((1 + (alpha*(z-z_WT))**n)**(1-1/n))+s_r #sw, head in cms
 
 h = np.linspace(10,0,10000)
 fig = plt.figure(figsize=(4.5,6) , dpi=100)
-plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1),h+z_WT,'-',color=red_new,label=r'$\alpha=1$')
-plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100),h+z_WT,'-',color=blue,label=r'$\alpha=100$')
-plt.vlines(s_r,z_WT,np.max(h+z_WT),linestyle='--',color='k',label='Residual')
+plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1),h+z_WT,'-',color=red_new,label=r'$\alpha=1$',linewidth=3)
+plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100),h+z_WT,'-',color=blue,label=r'$\alpha=100$',linewidth=3)
+plt.vlines(s_r,z_WT,np.max(h+z_WT),linestyle='--',color='k',label='W/o capillarity',linewidth=3)
 plt.fill_betweenx(h+z_WT, sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100), sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1), alpha=0.2, color=blue, label='Excess sat.')
-plt.ylabel(r'Elevation, $z$ [m]')
+plt.ylabel(r'Height above WT [m]')
 plt.xlabel(r'Saturation, $s_w(z)$')
 plt.xlim([-0.01,1.01])
 plt.ylim([z_WT-0.01,z_WT+np.max(h)+0.01])
@@ -464,11 +461,11 @@ for i in range(1,len(h)):
     Ic_100[i] = integrate.quad(lambda hh: phi(hh + z_WT) * sw_vG_alpha_wrt_WT(hh+z_WT,z_WT,2,100), 0, h[i])[0]
 
 fig = plt.figure(figsize=(4.5,6) , dpi=100)
-plt.plot(Ic_1[1:],h[1:]+z_WT,'-',color=red_new,label=r'$\alpha=1$')
-plt.plot(Ic_100[1:],h[1:]+z_WT,'-',color=blue,label=r'$\alpha=100$')
-plt.plot(s_r*(h)*phi(h+z_WT),h+z_WT,'--',color='k',label='Residual')
-plt.ylabel(r'Elevation, $z$ [m]')
-plt.xlabel(r'Excess water content, $[m^3/m^2]$')
+plt.plot(Ic_1[1:],h[1:]+z_WT,'-',color=red_new,label=r'$\alpha=1$',linewidth=3)
+plt.plot(Ic_100[1:],h[1:]+z_WT,'-',color=blue,label=r'$\alpha=100$',linewidth=3)
+plt.plot(s_r*(h)*phi(h+z_WT),h+z_WT,'--',color='k',label='W/o capillarity',linewidth=3)
+plt.ylabel(r'Height above WT [m]')
+plt.xlabel(r'Water vol. above WT / area $[m]$')
 #plt.xlim([-0.01,1.01])
 plt.ylim([z_WT-0.01,z_WT+np.max(h)+0.01])
 plt.legend(loc='upper right')
