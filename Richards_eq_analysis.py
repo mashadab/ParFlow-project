@@ -421,6 +421,21 @@ plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.pdf',bbox_inches='tight', dpi = 60
 plt.savefig(f's_w_vs_kr_vG_different_alpha_N2.png',bbox_inches='tight', dpi = 600)
 
 
+
+h = np.linspace(-100,0,100000)
+fig = plt.figure(figsize=(7.5,5) , dpi=100)
+plt.plot(sw_vG_alpha(h,2,1),kr_vG_alpha(h,2,1),'-',color=blue,alpha=1,label=r'W/ capillarity',linewidth=3)
+plt.plot(sat_arr,kr_vG_ideal_sat(sat_arr,2),'--',color=red,alpha=1,label=r'W/o capillarity',linewidth=3)
+plt.ylabel(r'$k_r(h)$')
+plt.xlim([s_r-0.01,s_s+0.01])
+plt.ylim([-0.01,1.01])
+plt.xlabel(r'$s_w(h)$')
+plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+plt.legend()
+plt.savefig(f's_w_vs_kr_vG_different_alpha_N2_cap_no_cap.pdf',bbox_inches='tight', dpi = 600)
+plt.savefig(f's_w_vs_kr_vG_different_alpha_N2_cap_no_cap.png',bbox_inches='tight', dpi = 600)
+
+
 ####################################################################################
 #Water table depth
 ####################################################################################
@@ -432,8 +447,8 @@ sw_vG_alpha_wrt_WT = lambda z,z_WT,n,alpha: (s_s - s_r)/((1 + (alpha*(z-z_WT))**
 
 h = np.linspace(10,0,10000)
 fig = plt.figure(figsize=(4.5,6) , dpi=100)
-plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1),h+z_WT,'-',color=red_new,label=r'$\alpha=1$',linewidth=3)
-plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100),h+z_WT,'-',color=blue,label=r'$\alpha=100$',linewidth=3)
+plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1),h+z_WT,'-',color=blue,label=r'$\alpha=1$',linewidth=3)
+plt.plot(sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100),h+z_WT,'-',color=red,label=r'$\alpha=100$',linewidth=3)
 plt.vlines(s_r,z_WT,np.max(h+z_WT),linestyle='--',color='k',label='W/o capillarity',linewidth=3)
 plt.fill_betweenx(h+z_WT, sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,100), sw_vG_alpha_wrt_WT(h+z_WT,z_WT,2,1), alpha=0.2, color=blue, label='Excess sat.')
 plt.ylabel(r'Height above WT [m]')
@@ -461,8 +476,8 @@ for i in range(1,len(h)):
     Ic_100[i] = integrate.quad(lambda hh: phi(hh + z_WT) * sw_vG_alpha_wrt_WT(hh+z_WT,z_WT,2,100), 0, h[i])[0]
 
 fig = plt.figure(figsize=(4.5,6) , dpi=100)
-plt.plot(Ic_1[1:],h[1:]+z_WT,'-',color=red_new,label=r'$\alpha=1$',linewidth=3)
-plt.plot(Ic_100[1:],h[1:]+z_WT,'-',color=blue,label=r'$\alpha=100$',linewidth=3)
+plt.plot(Ic_1[1:],h[1:]+z_WT,'-',color=blue,label=r'$\alpha=1$',linewidth=3)
+plt.plot(Ic_100[1:],h[1:]+z_WT,'-',color=red,label=r'$\alpha=100$',linewidth=3)
 plt.plot(s_r*(h)*phi(h+z_WT),h+z_WT,'--',color='k',label='W/o capillarity',linewidth=3)
 plt.ylabel(r'Height above WT [m]')
 plt.xlabel(r'Water vol. above WT / area $[m]$')
