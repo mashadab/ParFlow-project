@@ -1,0 +1,2 @@
+little_washita_time72hr_sim_typecap_storage.npz filter=lfs diff=lfs merge=lfs -text
+little_washita_time72hr_sim_typeno-cap_storage_cycle5.npz filter=lfs diff=lfs merge=lfs -text
