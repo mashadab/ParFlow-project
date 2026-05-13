@@ -78,10 +78,10 @@ width_km = width_m / 1000
 height_km = height_m / 1000
 
 print("\nBounding box dimensions:")
-print(f"Width  = {width_m:.2f} m ({width_km:.2f} km)")
-print(f"Height = {height_m:.2f} m ({height_km:.2f} km)")
-print(f"Area   = {(width_m * height_m) / 1e6:.2f} km²")
-
+print(f"Width  = {width_m:.10f} m ({width_km:.2f} km)")
+print(f"Height = {height_m:.10f} m ({height_km:.2f} km)")
+print(f"Area   = {(width_m * height_m) / 1e6:.10f} km²")
+stop
 # --------------------------------------------------
 # 4. Download/extract SSEBop actual ET using PyGeoHydro
 # --------------------------------------------------
@@ -203,7 +203,7 @@ df_daily.to_csv(
 daily_sum = eta.sum(
     dim=("x", "y"),
     skipna=True
-) * 1e3 * 1e3  #km to m conversion  m3/day
+)
 
 df_daily_sum = (
     daily_sum
