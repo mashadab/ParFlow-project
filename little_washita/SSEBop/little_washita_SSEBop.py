@@ -511,7 +511,7 @@ plt.savefig(
 plt.show()
 
 # --------------------------------------------------
-# 12. Water balance plot with daily mean ET panel
+# 12. Water balance plot with daily mean ET panel (mm/day)
 # --------------------------------------------------
 fig, axs = plt.subplots(
     3,
@@ -562,7 +562,7 @@ axs[1].set_ylabel("S [m$^3$]")
 
 axs[2].plot(
     compare["time"],
-    compare["ET_cap_m_day"],
+    compare["ET_cap_m_day"]*1e3,
     linewidth=3,
     color=blue,
     linestyle="-",
@@ -570,7 +570,7 @@ axs[2].plot(
 
 axs[2].plot(
     compare["time"],
-    compare["ET_no_cap_m_day"],
+    compare["ET_no_cap_m_day"]*1e3,
     linewidth=3,
     color=red,
     linestyle="--",
@@ -578,7 +578,7 @@ axs[2].plot(
 
 axs[2].plot(
     compare["time"],
-    compare["SSEBop_ET_m_day"],
+    compare["SSEBop_ET_m_day"]*1e3,
     linewidth=3,
     color="k",
     linestyle="--",
