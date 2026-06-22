@@ -279,6 +279,60 @@ plt.savefig(
 
 plt.show()
 
+
+
+# --------------------------------------------------
+# 10. Plot daily ET depth comparison (ppt)
+# --------------------------------------------------
+plt.figure(figsize=(24, 4), dpi=150)
+
+plt.plot(
+    compare["time"],
+    compare["ET_cap_m_day"]*1e3,
+    linewidth=3,
+    color=blue,
+    linestyle="-",
+    label="Model (capillarity)"
+)
+
+plt.plot(
+    compare["time"],
+    compare["ET_no_cap_m_day"]*1e3,
+    linewidth=3,
+    color=red,
+    linestyle="--",
+    label="Model (no capillarity)"
+)
+
+plt.plot(
+    compare["time"],
+    compare["SSEBop_ET_m_day"]*1e3,
+    linewidth=3,
+    color="k",
+    linestyle="--",
+    label="Observations"
+)
+
+plt.ylabel("Daily ET [mm/d]")
+plt.xlabel("Calendar date")
+plt.legend(loc="best")
+plt.xticks(rotation=30)
+plt.tight_layout()
+
+plt.savefig(
+    "model_vs_ssebop_daily_ET_mean_depth_ppt.png",
+    bbox_inches="tight",
+    dpi=600
+)
+
+plt.savefig(
+    "model_vs_ssebop_daily_ET_mean_depth_ppt.pdf",
+    bbox_inches="tight",
+    dpi=600
+)
+
+plt.show()
+
 # --------------------------------------------------
 # 11. Scatter comparison
 # --------------------------------------------------
@@ -415,6 +469,123 @@ axs[2].plot(
 )
 
 axs[2].set_ylabel("Daily ET [m$^3$/day]")
+axs[2].legend(loc="best")
+
+plt.xlabel("Calendar date")
+
+plt.subplots_adjust(
+    left=0.1,
+    bottom=0.1,
+    right=0.9,
+    top=0.85,
+    wspace=0.0,
+    hspace=0.0
+)
+
+axs[1].ticklabel_format(
+    axis="y",
+    style="sci",
+    scilimits=(0, 0)
+)
+
+axs[2].ticklabel_format(
+    axis="y",
+    style="sci",
+    scilimits=(0, 0)
+)
+
+plt.xticks(rotation=30)
+
+plt.savefig(
+    "little_washita_storage_ET_mean_depth_SSEBop.pdf",
+    bbox_inches="tight",
+    dpi=600
+)
+
+plt.savefig(
+    "little_washita_storage_ET_mean_depth_SSEBop.png",
+    bbox_inches="tight",
+    dpi=600
+)
+
+plt.show()
+
+# --------------------------------------------------
+# 12. Water balance plot with daily mean ET panel
+# --------------------------------------------------
+fig, axs = plt.subplots(
+    3,
+    sharex=True,
+    figsize=(12, 10),
+    dpi=100
+)
+
+axs[0].plot(
+    time_array_datetime,
+    subsurf_storage_cap,
+    linewidth=3,
+    color=blue,
+    linestyle="-",
+    label="Capillarity"
+)
+
+axs[0].plot(
+    time_array_datetime,
+    subsurf_storage_no_cap,
+    linewidth=3,
+    color=red,
+    linestyle="--",
+    label="No capillarity"
+)
+
+axs[0].legend(loc="best")
+axs[0].set_ylabel("Ss [m$^3$]")
+
+axs[1].plot(
+    time_array_datetime,
+    surf_storage_cap,
+    linewidth=3,
+    color=blue,
+    linestyle="-"
+)
+
+axs[1].plot(
+    time_array_datetime,
+    surf_storage_no_cap,
+    linewidth=3,
+    color=red,
+    linestyle="--"
+)
+
+axs[1].set_ylabel("S [m$^3$]")
+
+
+axs[2].plot(
+    compare["time"],
+    compare["ET_cap_m_day"],
+    linewidth=3,
+    color=blue,
+    linestyle="-",
+)
+
+axs[2].plot(
+    compare["time"],
+    compare["ET_no_cap_m_day"],
+    linewidth=3,
+    color=red,
+    linestyle="--",
+)
+
+axs[2].plot(
+    compare["time"],
+    compare["SSEBop_ET_m_day"],
+    linewidth=3,
+    color="k",
+    linestyle="--",
+    label="SSEBop"
+)
+
+axs[2].set_ylabel("Daily ET [mm/day]")
 axs[2].legend(loc="best")
 
 plt.xlabel("Calendar date")
